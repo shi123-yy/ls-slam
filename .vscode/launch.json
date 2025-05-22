@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": false,
-      "cwd": "/home/ss/sensor/sersor",
-      "program": "/home/ss/sensor/sersor/build/Debug/outDebug",
+      "cwd": "/home/s/worklearn/ls-slam/src",
+      "program": "/home/s/worklearn/ls-slam/src/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
