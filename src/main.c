@@ -8,8 +8,16 @@ int main(int argc, char const *argv[])
 {
     /* code */
     
-    serialInit(serial_id);
-
+    int sts = serialInit(serial_id);
+    if (sts < 0)
+    {
+        printf("串口初始化失败\n");
+        return -1;
+    }
+    else
+    {
+        printf("串口初始化成功\n");
+    }
     int param_id =0;
     printfParam();
 
@@ -20,8 +28,8 @@ int main(int argc, char const *argv[])
         
         scanf("%d", &param_id);
 
-        appProcess(serial_id);
-       
+        // appProcess(serial_id);
+        appParamProcess(serial_id , param_id);
         usleep(100*1000);	
         /* code */
     }

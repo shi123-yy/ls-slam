@@ -23,10 +23,10 @@ sem_t  *g_signal = NULL; //调试线程信号量
 
 // 	exit(0);
 // }
-void serialInit(int fd)
+int serialInit(int fd)
 {
     
-    fd = open("/dev/ttyUSB0", O_RDWR | O_NOCTTY | O_NDELAY);
+    fd = open("/dev/pts/2", O_RDWR | O_NOCTTY | O_NDELAY);
     if (fd < 0)
     {
         printf("open serial failed\n");
@@ -66,6 +66,14 @@ int appProcess(int fd)
         buffer[strcspn(buffer, "\n")] = '\0';
 
         char *token = strtok(buffer, ",");
+
+        const char *params[10] = {0};
+        int param_count = 0;
+        char *param_id;
+        while ((param_id = strtok(NULL, ",")) && param_count < 10) 
+        {
+            params[param_count++] = param_id;
+        }
         if(token == NULL)
         {
             continue;
@@ -73,13 +81,13 @@ int appProcess(int fd)
 
         if(0 == strcmp(token, "SETNET")) //设置网络参数
         {
-            const char *param = strtok(NULL, ",");
-            if(param == NULL)
-            {
-                printf("Invalid SETNET command\n");
-                continue;
-            }
-            sendParam(fd , token, param);
+            // const char *param = strtok(NULL, ",");
+            // if(param == NULL)
+            // {
+            //     printf("Invalid SETNET command\n");
+            //     continue;
+            // }
+            sendParam(fd , token, params, param_count);
         }
         else if(0 == strcmp(token, "GETNET"))//获取网络参数
         {
@@ -87,23 +95,11 @@ int appProcess(int fd)
         }
         else if(0 == strcmp(token, "NETSTATE"))//上传网络状态
         {
-            const char *param = strtok(NULL, ",");
-            if(param == NULL)
-            {
-                printf("Invalid SETNET command\n");
-                continue;
-            }
-            sendParam(fd , token, param);
+            sendParam(fd , token, params, param_count);
         }
         else if (0 == strcmp(token , "SETAPN"))//设置APN参数
         {
-            const char *param = strtok(NULL, ",");
-            if(param == NULL)
-            {
-                printf("Invalid SETNET command\n");
-                continue;
-            }
-            sendParam(fd , token, param);
+            sendParam(fd , token, params, param_count);
         }
         else if(0 == strcmp(token, "GETAPN"))//获取APN参数
         {
@@ -131,13 +127,7 @@ int appProcess(int fd)
         }
         else if (0 == strcmp(token, "LOCATION"))//关闭支持的卫星
         {
-           const char *param = strtok(NULL, ",");
-            if(param == NULL)
-            {
-                printf("Invalid SETNET command\n");
-                continue;
-            }
-            sendParam(fd , token, param);
+           sendParam(fd , token, params, param_count);
         }
         else if (0 == strcmp(token, "GET_DEVICE_MSG"))//获取设备信息
         {
@@ -145,53 +135,23 @@ int appProcess(int fd)
         }
         else if (0 == strcmp(token, "SET_WORKMODE"))//设置工作模式
         {
-           const char *param = strtok(NULL, ",");
-            if(param == NULL)
-            {
-                printf("Invalid SETNET command\n");
-                continue;
-            }
-            sendParam(fd , token, param);
+           sendParam(fd , token, params, param_count);
         }
         else if (0 == strcmp(token, "SET_CONFIG"))//设置电台参数
         {
-           const char *param = strtok(NULL, ",");
-            if(param == NULL)
-            {
-                printf("Invalid SETNET command\n");
-                continue;
-            }
-            sendParam(fd , token, param);
+           sendParam(fd , token, params, param_count);
         }
         else if (0 == strcmp(token, "SET_TRACKER_INSTALL_PARAM"))//设置拖拉机安装参数
         {
-           const char *param = strtok(NULL, ",");
-            if(param == NULL)
-            {
-                printf("Invalid SETNET command\n");
-                continue;
-            }
-            sendParam(fd , token, param);
+           sendParam(fd , token, params, param_count);
         }
         else if (0 == strcmp(token, "SET_ANGLE_INSTALL_PARAM"))//设置姿态角安装误差参数
         {
-           const char *param = strtok(NULL, ",");
-            if(param == NULL)
-            {
-                printf("Invalid SETNET command\n");
-                continue;
-            }
-            sendParam(fd , token, param);
+           sendParam(fd , token, params, param_count);
         }
         else if (0 == strcmp(token, "HCNX,SET_SINGLE_BEIDOU_MODE"))//设置单北斗模式
         {
-           const char *param = strtok(NULL, ",");
-            if(param == NULL)
-            {
-                printf("Invalid SETNET command\n");
-                continue;
-            }
-            sendParam(fd , token, param);
+           sendParam(fd , token, params, param_count);
         }
         else if (0 == strcmp(token, "SET_HEADING_INVERSION"))//设置航向取反
         {
@@ -199,13 +159,7 @@ int appProcess(int fd)
         }
         else if (0 == strcmp(token, "SET_VEH_CTRLPOINT_OUTPUT_PARAM"))//设置是否打开车辆控制点坐标输出即车辆类型
         {
-           const char *param = strtok(NULL, ",");
-            if(param == NULL)
-            {
-                printf("Invalid SETNET command\n");
-                continue;
-            }
-            sendParam(fd , token, param);
+           sendParam(fd , token, params, param_count);
         }
         else if(0 == strcmp(token,"GET_VEH_CTRLPOINT_OUTPUT_PARAM"))//获取是否打开车辆控制点坐标输出即车辆类型
         {
@@ -213,13 +167,7 @@ int appProcess(int fd)
         }
         else if (0 == strcmp(token, "SET_VEH_WHEEL_BASE"))//设置车辆前后轴距离
         {
-           const char *param = strtok(NULL, ",");
-            if(param == NULL)
-            {
-                printf("Invalid SETNET command\n");
-                continue;
-            }
-            sendParam(fd , token, param);
+           sendParam(fd , token, params, param_count);
         }
 
         
@@ -291,15 +239,15 @@ int sendNoParam(int fd, const char *cmd)
     printf("send param: %s\n", full_cmd);
 }
 
-int sendParam(int fd, const char *cmd, const char *param)
+int sendParam(int fd, const char *cmd, const char **params, int param_count)
 {
     char full_cmd[256] = {0};
     char *ptr = full_cmd;
 
     ptr += sprintf(ptr, "$HCNX,%s", cmd);
-    for(int i = 0; i < strlen(param); i++)
+    for(int i = 0; i < param_count; i++)
     {
-        ptr += sprintf(ptr, "%c", param[i]);
+        ptr += sprintf(ptr, ",%s", params[i]);
     }
 
     const char *bcc = strchr(full_cmd, '$')+1;
@@ -317,3 +265,145 @@ int sendParam(int fd, const char *cmd, const char *param)
     printf("send param: %s\n", full_cmd);
 }
 
+
+int appParamProcess(int fd , int id)
+{
+    FILE *file = fopen("./config/config.txt", "r+");
+    if(file == NULL)
+    {
+        printf("Error opening file\n");
+        return ERROR;
+    }
+    int count = 0;
+    char buffer[256] = {0};
+    while(fgets(buffer, sizeof(buffer), file) != NULL)
+    {
+        count++;
+        if(count != id)
+        {
+            continue;
+        }
+        buffer[strcspn(buffer, "\n")] = '\0';
+
+        char *token = strtok(buffer, ",");
+
+        const char *params[10] = {0};
+        int param_count = 0;
+        char *param_id;
+        while ((param_id = strtok(NULL, ",")) && param_count < 10) 
+        {
+            params[param_count++] = param_id;
+        }
+        if(token == NULL)
+        {
+            continue;
+        }
+
+        switch (id)
+        {
+            case 1:
+            {
+                sendParam(fd , token, params, param_count);
+            }
+            break;
+            case 2:
+            {
+                sendNoParam(fd, token);
+            }
+            break;
+            case 3:
+            {
+                sendParam(fd , token, params, param_count);
+            }
+            break;
+            case 4:
+            {
+                sendNoParam(fd, token);
+            }
+            break;
+            case 5:
+            {
+                sendNoParam(fd, token);
+            }
+            break;
+            case 6:
+            {
+                sendNoParam(fd, token);
+            }
+            break;
+            case 7:
+            {
+                sendNoParam(fd, token);
+            }
+            break;
+            case 8:
+            {
+                sendNoParam(fd, token);
+            }
+            break;
+            case 9:
+            {
+                sendNoParam(fd, token);
+            }
+            break;
+            case 10:
+            {
+                sendParam(fd , token, params, param_count);
+            }
+            break;
+            case 11:
+            {
+                sendNoParam(fd, token);;
+            }
+            break;
+            case 12:
+            {
+                sendParam(fd , token, params, param_count);
+            }
+            break;
+            case 13:
+            {
+                sendParam(fd , token, params, param_count);
+            }
+            break;
+            case 14:
+            {
+                sendParam(fd , token, params, param_count);
+            }
+            break;
+            case 15:
+            {
+                sendParam(fd , token, params, param_count);
+            }
+            break;
+            case 16:
+            {
+                sendParam(fd , token, params, param_count);
+            }
+            break;
+            case 17:
+            {
+                sendNoParam(fd, token);
+            }
+            break;
+            case 18:
+            {
+                sendParam(fd , token, params, param_count);
+            }
+            break;
+            case 19:
+            {
+                sendNoParam(fd, token);
+            }
+            break;
+            case 20:
+            {
+                sendParam(fd , token, params, param_count);
+            }
+            break;
+            default:
+            break;
+        }
+    }
+
+}

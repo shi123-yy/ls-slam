@@ -26,9 +26,9 @@
  
  cp = a
  ifeq ($(cp),x86)
- 	CC = arm-grammer-linux-gnueabi-gcc -mfloat-abi=hard
+ 	CC = gcc
  else
-	CC = arm-linux-gnueabihf-gcc
+	CC = gcc
  endif
  CFLAGS = -Wall -I${DIR_INC}
  
