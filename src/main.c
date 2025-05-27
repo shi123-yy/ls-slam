@@ -29,7 +29,7 @@ int main(int argc, char const *argv[])
         scanf("%d", &param_id);
 
         // appProcess(serial_id);
-        appParamProcess(serial_id , param_id);
+        appParamProcess(sts , param_id);
         usleep(100*1000);	
         /* code */
     }

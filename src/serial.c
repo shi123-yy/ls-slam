@@ -26,7 +26,7 @@ sem_t  *g_signal = NULL; //调试线程信号量
 int serialInit(int fd)
 {
     
-    fd = open("/dev/pts/2", O_RDWR | O_NOCTTY | O_NDELAY);
+    fd = open("/dev/ttyUSB0", O_RDWR | O_NOCTTY | O_NDELAY);
     if (fd < 0)
     {
         printf("open serial failed\n");
