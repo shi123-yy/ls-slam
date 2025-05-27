@@ -1,0 +1,8 @@
+SETNET,CORS/APIS,ip,port,name,passwd,source,baseID
+GETNET
+NETSTATE
+SETAPN,APN,服务商务码,用户名，密码
+GETICCID
+CONT_CRC_ERROR
+GET_PN_INF
+CLEAN_EPH 
