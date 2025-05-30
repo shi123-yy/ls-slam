@@ -58,6 +58,16 @@
   "C_Cpp_Runner.msvcSecureNoWarnings": false,
   "files.associations": {
     "iostream": "c",
-    "serial.h": "c"
+    "serial.h": "c",
+    "fstream": "c",
+    "iosfwd": "c",
+    "istream": "c",
+    "limits": "c",
+    "sstream": "c",
+    "stop_token": "c",
+    "streambuf": "c",
+    "*.inc": "c",
+    "termios.h": "c",
+    "fcntl.h": "c"
   }
 }

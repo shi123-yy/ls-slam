@@ -23,14 +23,16 @@ sem_t  *g_signal = NULL; //调试线程信号量
 
 // 	exit(0);
 // }
-int serialInit(int fd)
+int serialInit(int fd, const char *device)
 {
     
-    fd = open("/dev/ttyUSB0", O_RDWR | O_NOCTTY | O_NDELAY);
+    fd = open(device, O_RDWR | O_NOCTTY | O_NDELAY);
     if (fd < 0)
     {
         printf("open serial failed\n");
     }
+
+      
     struct termios options;
 
     tcgetattr(fd, &options);
@@ -112,7 +114,7 @@ int appProcess(int fd)
             sendNoParam(fd, token);
         }
         else if (0 == strcmp(token, "CONT_CRC_ERROR"))//接收命令时CRC校验码错误
-        {
+        {   
             /* code */
             sendNoParam(fd, token);
         }
@@ -266,9 +268,9 @@ int sendParam(int fd, const char *cmd, const char **params, int param_count)
 }
 
 
-int appParamProcess(int fd , int id)
+int appParamProcess(int fd , int id, const char *path)
 {
-    FILE *file = fopen("./config/config.txt", "r+");
+    FILE *file = fopen(path, "r+");
     if(file == NULL)
     {
         printf("Error opening file\n");
