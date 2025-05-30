@@ -2,6 +2,22 @@
 #define SERIAL_H
 
 #include <stdio.h>
+#include <pthread.h>
+
+typedef struct
+{
+    int fd;
+    // int baudrate;
+    // int databits;
+    pthread_t readThreadID;
+    pthread_t writeThreadID;
+
+    const char *path;
+    int threadExitFlag
+
+
+}SerialPort;
+
 
 
 int serialInit(int fd, const char *device);
@@ -14,6 +30,8 @@ void printfParam();
 int sendParam(int fd, const char *cmd, const char **params, int param_count);
 int sendNoParam(int fd, const char *cmd);
 
+void readProcess(SerialPort *arg);
+void writeProcess(SerialPort *arg);
+int pthreadStop(SerialPort *pemn);
+int pthreadStart(SerialPort *pemn);
 #endif
-
-

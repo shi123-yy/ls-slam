@@ -397,3 +397,44 @@ int appParamProcess(int fd , int id, const char *path)
     }
 
 }
+
+
+void readProcess(SerialPort *arg)
+{
+    // int sts = 0;
+    char readbuffer[256]={0};
+    while (arg->threadExitFlag == 0)
+    {
+        int readn = read(arg->fd,readbuffer, sizeof(readbuffer));
+        if (readn > 0)
+        {
+            readbuffer[readn] = '\0';
+            printf("Received: %s\n", readbuffer);
+        }else if (readn < 0)
+        {
+            /* code */
+            perror("read error");
+        }
+        usleep(100000);
+        
+    }
+}
+
+
+void writeProcess(SerialPort *arg)
+{
+    int param_id = 0;
+    char writebuffer[256]={0};
+    while (arg->threadExitFlag == 0)
+    {
+        scanf("%d", &param_id);
+        if (param_id == 0)
+        {
+            break;
+        }
+        // appProcess(serial_id);
+        appParamProcess(arg->fd , param_id, arg->path);
+        
+        usleep(100*1000);	
+    }
+}
