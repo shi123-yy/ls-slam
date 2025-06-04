@@ -40,10 +40,10 @@ int serialInit(int fd, const char *device)
     return fd;
 }
 
-int appProcess(int fd)
+int appProcess(int fd, const char *path)
 {
 
-    FILE *file = fopen("./config/config.txt", "r+");
+    FILE *file = fopen(path, "r+");
     if(file == NULL)
     {
         printf("Error opening file\n");
@@ -421,19 +421,19 @@ void readProcess(SerialPort *arg)
 }
 
 
-void writeProcess(SerialPort *arg)
+void writeProcess(SerialPort *arg, int serial_id, const char *path)
 {
     int param_id = 0;
     char writebuffer[256]={0};
     while (arg->threadExitFlag == 0)
     {
-        scanf("%d", &param_id);
-        if (param_id == 0)
-        {
-            break;
-        }
-        // appProcess(serial_id);
-        appParamProcess(arg->fd , param_id, arg->path);
+        // scanf("%d", &param_id);
+        // if (param_id == 0)
+        // {
+        //     break;
+        // }
+        appProcess(serial_id, path);
+        // appParamProcess(serial_id , param_id, path);
         
         usleep(100*1000);	
     }

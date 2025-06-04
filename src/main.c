@@ -19,17 +19,18 @@
 
 sem_t  *g_signal = NULL; //调试线程信号量
 SerialPort *appHandle;
-
-int pthreadStop(SerialPort *pemn) 
+int fd = 0;
+void pthreadStop(SerialPort *pemn) 
 {
-    int sts = 0;
+    
     pemn->threadExitFlag = 1;  // 设置全局退出标志
     
     // 等待线程结束
     pthread_join(pemn->writeThreadID, NULL);
     pthread_join(pemn->readThreadID, NULL);
     
-    return sts;
+    close(pemn->fd);
+    
 }
 //关闭设备
 void die(int x)
@@ -42,9 +43,9 @@ void die(int x)
 
 	exit(0);
 }
-int serial_id = 0;
 
-int pthreadStart(SerialPort *pemn)
+
+void pthreadStart(SerialPort *pemn)
 {
     int sts = 0;
     pthread_attr_t         attr;                        //线程属性
@@ -56,19 +57,21 @@ int pthreadStart(SerialPort *pemn)
     pthread_attr_init(&attr);                           //初始化线程属性
 	pthread_attr_setscope(&attr, PTHREAD_SCOPE_SYSTEM); //设置线程属性
 
-    sts = pthread_create(&readThread, &attr, readProcess, (void*)pemn);
-    if (sts < 0)
-    {
-        /* code */
-        printf("can thread create failed\n");
-    }
+    // sts = pthread_create(&readThread, NULL, readProcess, NULL);
+    // if (sts < 0)
+    // {
+    //     /* code */
+    //     printf("can thread create failed\n");
+    // }
     
-    sts = pthread_create(&writeThread, &attr, writeProcess, (void*)pemn);
+    sts = pthread_create(&writeThread, NULL, writeProcess, NULL);
     if (sts < 0)
     {
         /* code */
         printf("serial thread create failed\n");
     }
+    // return sts;
+    // sts = pthread_create(&thread_app_proess, NULL, appProcess,NULL);
 }
 
 
@@ -81,11 +84,12 @@ int main(int argc, char const *argv[])
         printf("请输入串口名称");
         return -1;
     }
-    appHandle->path = argv[2];
-    appHandle->fd = 0;
+    // appHandle->path = argv[2];
+    // appHandle->fd = 0;
+    const char *path = argv[2];
     
 
-    int sts = serialInit(appHandle->fd, argv[1]);
+    int sts = serialInit(fd, argv[1]);
     if (sts < 0)
     {
         printf("串口初始化失败\n");
@@ -98,7 +102,7 @@ int main(int argc, char const *argv[])
 
 
     //线程启动
-    sts = pthreadStart(&appHandle);
+    pthreadStart(&appHandle);
     if(sts < 0)
     {
         printf("pthread start failed\n");

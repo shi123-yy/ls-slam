@@ -13,7 +13,7 @@ typedef struct
     pthread_t writeThreadID;
 
     const char *path;
-    int threadExitFlag
+    int threadExitFlag;
 
 
 }SerialPort;
@@ -32,6 +32,6 @@ int sendNoParam(int fd, const char *cmd);
 
 void readProcess(SerialPort *arg);
 void writeProcess(SerialPort *arg);
-int pthreadStop(SerialPort *pemn);
-int pthreadStart(SerialPort *pemn);
+void pthreadStop(SerialPort *pemn);
+void pthreadStart(SerialPort *pemn);
 #endif
